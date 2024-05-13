@@ -1,7 +1,6 @@
 package entity;
 
 import animation.Animator;
-import main.State;
 import misc.Direction;
 
 import java.awt.*;
@@ -22,17 +21,14 @@ public class Ghost extends Entity {
 
     @Override
     public Direction getNewDirection() {
-        int random = (int) (Math.random() * 3);
-        switch (random) {
-            case 0:
+        double random = (Math.random() * 3);
+        if (0 < random && random < 0.25)
                 return Direction.UP;
-            case 1:
-                return Direction.RIGHT;
-            case 2:
-                return Direction.DOWN;
-            default:
-                return Direction.LEFT;
-        }
+        if (0.25 < random && random < 0.5)
+            return Direction.RIGHT;
+        if (0.5 < random && random < 0.75)
+            return Direction.DOWN;
+        return Direction.LEFT;
     }
 
     @Override

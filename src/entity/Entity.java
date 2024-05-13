@@ -4,7 +4,7 @@ import animation.Animator;
 import animation.ImageLoader;
 import main.Panel;
 import misc.Direction;
-import main.State;
+import state.GameState;
 import misc.Hitbox;
 
 import java.awt.*;
@@ -35,7 +35,7 @@ public abstract class Entity {
 
     public abstract Direction getNewDirection();
 
-    public void update(State state) {
+    public void update(GameState state) {
         Direction newDirection = getNewDirection();
         Point newPosition = move(newDirection);
         boolean update;

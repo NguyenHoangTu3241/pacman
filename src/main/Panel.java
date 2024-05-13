@@ -1,5 +1,7 @@
 package main;
 import control.KeyHandler;
+import misc.CurrentState;
+import state.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,15 +15,33 @@ public class Panel extends JPanel {
     private static State state;
     public Panel() {
         keyHandler = new KeyHandler();
-        state = new State(keyHandler);
+        state = new MenuState(keyHandler);
         gameWindow = new Window(keyHandler, this);
-
-    }
-    public static State getCurrentState() {
-        return state;
     }
     public void update() {
         state.update();
+        if (MenuState.class == state.getClass() && ((MenuState) state).gameStart()) {
+            state = new GameState(keyHandler);
+        }
+        else if (GameState.class == state.getClass()) {
+            if (((GameState) state).gameWon()) {
+                int score = ((GameState) state).getScore();
+                keyHandler.setCurrentState(CurrentState.WIN_STATE);
+                state = new WinState(keyHandler, score);
+            }
+            else if (((GameState) state).gameLost()) {
+                int score = ((GameState) state).getScore();
+                keyHandler.setCurrentState(CurrentState.LOSE_STATE);
+                state = new LoseState(keyHandler, score);
+            }
+        }
+
+        else if (WinState.class == state.getClass() && ((WinState) state).gameMenu()) {
+            state = new MenuState(keyHandler);
+        }
+        else if (LoseState.class == state.getClass() && ((LoseState) state).gameMenu()) {
+            state = new MenuState(keyHandler);
+        }
     }
 
     @Override

@@ -1,14 +1,14 @@
 package main;
 
 
-public class Loop implements Runnable{
+public class Loop implements Runnable {
 
     private static final int fps = 60;
 
-    private Panel game;
+    private Panel panel;
     private boolean running;
-    public Loop(Panel _game) {
-        game = _game;
+    public Loop(Panel _panel) {
+        panel = _panel;
     }
 
     @Override
@@ -37,16 +37,17 @@ public class Loop implements Runnable{
             drawCount++;
 
             update();
+
             draw();
         }
     }
 
     private void update() {
-        game.update();
+        panel.update();
     }
 
     private void draw() {
-        game.repaint();
+        panel.repaint();
     }
 
 }
