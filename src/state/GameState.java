@@ -2,111 +2,82 @@ package state;
 
 import control.KeyHandler;
 import entity.Entity;
-
 import entity.Ghost;
 import entity.PacMan;
 import map.MapDecoder;
 import map.Wall;
-import misc.CurrentState;
+import misc.Text;
 import object.Object;
-import object.*;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GameState extends State {
     private List<Entity> entities;
-    private List<Object> gameObjects;
+    public List<Object> gameObjects;
     private List<Object> gameObjectsToRemove;
-    private MapDecoder mapInitializer;
-    private List<Wall> walls;
-    private boolean[][] hasWall;
+    private final List<Wall> walls;
+    private final boolean[][] hasWall;
     PacMan pacman;
-    Ghost ghost_red, ghost_cyan, ghost_orange, ghost_pink;
-    Point init_ghost_red, init_ghost_cyan, init_ghost_orange, init_ghost_pink, init_pacman;
     private int score = 0;
+    private Text scoreText;
     private boolean win = false, lose = false;
-    public GameState(KeyHandler _keyHandler){
+
+    public GameState(KeyHandler _keyHandler, MapDecoder mapDecoder){
         super(_keyHandler);
-        gameObjects = new ArrayList<>();
+
+        gameObjects = mapDecoder.getGameObjects();
         gameObjectsToRemove = new ArrayList<>();
-        entities = new ArrayList<>();
-        mapInitializer = new MapDecoder();
-        walls = new ArrayList<>();
-        hasWall = new boolean[main.Panel.MAP_COL][main.Panel.MAP_ROW];
+        walls = mapDecoder.getWalls();
+        hasWall = mapDecoder.getHasWall();
+
         init();
+        respawn(mapDecoder);
     }
 
-    public void respawn() {
-        entities.clear();
+    public void respawn(MapDecoder mapDecoder) {
+        entities = new ArrayList<>();
+
+        List<Point> entityPositions = mapDecoder.getEntityPositions();
+        pacman = new PacMan(entityPositions.getFirst().x, entityPositions.getFirst().y, keyHandler);
+        entities.add(pacman);
+        System.out.println("created pacman");
+
+        List<String> ghostColors = new ArrayList<>(Arrays.asList("", "ghost_cyan", "ghost_red", "ghost_orange", "ghost_pink"));
+        for (int i = 1; i < entityPositions.size(); i++) {
+            entities.add(new Ghost(entityPositions.get(i).x, entityPositions.get(i).y, ghostColors.get(i), pacman));
+            System.out.println(STR."created \{ghostColors.get(i)}");
+        }
     }
     public void init() {
-        entities.clear();
-        gameObjects.clear();
-        walls.clear();
-        for (int row = 0; row < main.Panel.MAP_ROW; row++) {
-            for (int col = 0; col < main.Panel.MAP_COL; col++) {
-                char name = mapInitializer.mapTile[col][row];
-                if (mapInitializer.wallNames.contains(STR."\{name}")) {
-                    walls.add(new Wall(STR."\{name}", col, row));
-                    hasWall[col][row] = true;
-                }
-                else hasWall[col][row] = false;
-                if (name == '.') {
-                    gameObjects.add(new Pellet(col, row));
-                }
-                else if (name == 'o') {
-                    gameObjects.add(new PowerPellet(col, row));
-                }
-                else if (name == 'a') {
-                    init_ghost_cyan = new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE);
-                }
-                else if (name == 'b') {
-                    init_ghost_red = new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE);
-                }
-                else if (name == 'c') {
-                    init_ghost_orange = new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE);
-                }
-                else if (name == 'd') {
-                    init_ghost_pink = new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE);
-                }
-                else if (name == 'p') {
-                    init_pacman = new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE);
-                }
-            }
-        }
-        ghost_cyan = new Ghost(init_ghost_cyan.x, init_ghost_cyan.y, "ghost_cyan");
-        ghost_red = new Ghost(init_ghost_red.x, init_ghost_red.y, "ghost_red");
-        ghost_orange = new Ghost(init_ghost_orange.x, init_ghost_orange.y, "ghost_orange");
-        ghost_pink = new Ghost(init_ghost_pink.x, init_ghost_pink.y, "ghost_pink");
-        pacman = new PacMan(init_pacman.x, init_pacman.y, keyHandler);
-        entities.add(ghost_cyan);
-        entities.add(ghost_red);
-        entities.add(ghost_orange);
-        entities.add(ghost_pink);
-        entities.add(pacman);
-
+        scoreText = new Text(STR."Current score: \{score}", 20, new Point(50, 50));
+        texts.add(scoreText);
     }
 
     public void update() {
-        for (Entity entity : entities) {
-            entity.update(this);
-            if (entity != pacman && entity.getHitbox().collidesWith(pacman.getHitbox())) {
-                lose = true;
-            }
-        }
+
         for (Object object : gameObjects) {
             if (object.getHitbox().collidesWith(pacman.getHitbox())) {
                 gameObjectsToRemove.add(object);
-                score += 10;
-                System.out.println("score update: " + score);
+                score += object.getScoreValue();
+                System.out.println(STR."score update: \{score}");
+                scoreText.setContent(STR."Current score: \{score}");
+                break;
             }
         }
         gameObjects.removeAll(gameObjectsToRemove);
         gameObjectsToRemove.clear();
 
         if (gameObjects.isEmpty()) win = true;
+
+        for (Entity entity : entities) {
+            entity.update(this);
+            if (entity != pacman && entity.getHitbox().collidesWith(pacman.getHitbox())) {
+                lose = true;
+            }
+        }
     }
     public List<Object> getGameObjects() {
         gameObjects.removeAll(gameObjectsToRemove);
@@ -121,7 +92,6 @@ public class GameState extends State {
     public boolean hasWall(Point grid) {
         return hasWall[grid.x][grid.y];
     }
-
     public int getScore() {
         return score;
     }

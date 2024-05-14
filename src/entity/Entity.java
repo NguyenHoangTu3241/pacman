@@ -36,48 +36,12 @@ public abstract class Entity {
     public abstract Direction getNewDirection();
 
     public void update(GameState state) {
-        Direction newDirection = getNewDirection();
-        Point newPosition = move(newDirection);
-        boolean update;
-        if (isOnGrid(newPosition) && !state.hasWall(hitbox.nextGrid(newDirection))) {
-            direction = newDirection;
-            update = true;
-        } else {
-            newPosition = move(direction);
-            update = !state.hasWall(hitbox.nextGrid(direction));
-        }
-        if (update) {
-            position = newPosition;
-            hitbox = new Hitbox(newPosition);
-            animator.updateSprite(direction);
-        }
-    }
 
-    private Point move(Direction newDirection) {
-        int newX = position.x;
-        int newY = position.y;
-        switch (newDirection) {
-            case UP:
-                newY -= speed;
-                break;
-            case DOWN:
-                newY += speed;
-                break;
-            case LEFT:
-                newX -= speed;
-                break;
-            case RIGHT:
-                newX += speed;
-                break;
-        }
-        return new Point(newX, newY);
     }
 
     public boolean isOnGrid(Point pos) {
         return (pos.x - Panel.MAP_X) % Panel.SPRITE_SIZE == 0 || (pos.y - Panel.MAP_Y) % Panel.SPRITE_SIZE == 0;
     }
-
-    public abstract void handleCollision(Object other);
 
     public abstract Image getSprite();
 

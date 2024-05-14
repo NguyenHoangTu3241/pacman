@@ -28,6 +28,11 @@ public class Hitbox {
         height = Panel.SPRITE_SIZE;
         bounds = new Rectangle(x, y, width, height);
     }
+    public void setPosition(Point newPoint) {
+        x = newPoint.x;
+        y = newPoint.y;
+        bounds.setLocation(newPoint);
+    }
     public int getX() {
         return x;
     }

@@ -28,9 +28,7 @@ public class LoseState extends State {
     }
 
     @Override
-    public void update() {
-
-    }
+    public void update() {}
     public boolean gameMenu() {
         return keyHandler.isMenu();
     }

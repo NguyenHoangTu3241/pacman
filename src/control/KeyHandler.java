@@ -2,31 +2,30 @@ package control;
 
 import misc.CurrentState;
 import misc.Direction;
-import state.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
     public Direction newDirection = Direction.RIGHT;
-    private CurrentState currentState = CurrentState.MENU_STATE;
+    private CurrentState currentState = CurrentState.WIN_STATE;
     public KeyHandler() {}
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (currentState == CurrentState.MENU_STATE) {
-            currentState = CurrentState.GAME_STATE;
-            newDirection = Direction.UP;
+        switch (currentState) {
+            case MENU_STATE:
+                currentState = CurrentState.GAME_STATE;
+                newDirection = Direction.UP;
+                break;
+            case GAME_STATE:
+                GameHandler(keyCode);
+                break;
+            case LOSE_STATE, WIN_STATE:
+                currentState = CurrentState.MENU_STATE;
+                break;
         }
-        else if (currentState == CurrentState.GAME_STATE) {
-            GameHandler(keyCode);
-        }
-        else if (currentState == CurrentState.WIN_STATE) {
-            currentState = CurrentState.MENU_STATE;
-        }
-        else if (currentState == CurrentState.LOSE_STATE) {
-            currentState = CurrentState.MENU_STATE;
-        }
+
     }
     public void setCurrentState(CurrentState _currentState) {
         currentState = _currentState;
@@ -47,7 +46,7 @@ public class KeyHandler implements KeyListener {
                 break;
         }
     }
-    public boolean isGameStarted() {
+    public boolean isGame() {
         return currentState == CurrentState.GAME_STATE;
     }
     public boolean isMenu() {

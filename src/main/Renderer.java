@@ -10,15 +10,13 @@ import java.awt.*;
 public class Renderer {
 
     public synchronized void render(State state, Graphics graphics) {
-        renderTexts(state, graphics);
-
         if (state.getClass() == GameState.class) {
             renderMap((GameState) state, graphics);
             renderObjects((GameState) state, graphics);
             renderEntities((GameState) state, graphics);
         }
-        else if (state.getClass() == MenuState.class) {
-        }
+        renderTexts(state, graphics);
+        renderImages(state, graphics);
     }
 
     private void renderMap(GameState state, Graphics graphics) {
@@ -27,7 +25,7 @@ public class Renderer {
         }
     }
     private void renderObjects(GameState state, Graphics graphics) {
-        for (Object gameObject : state.getGameObjects()) {
+        for (Object gameObject : state.gameObjects) {
             graphics.drawImage(gameObject.getSprite(), gameObject.getPosition().x, gameObject.getPosition().y, null);
         }
     }
@@ -36,9 +34,6 @@ public class Renderer {
             graphics.drawImage(entity.getSprite(), entity.getPosition().x, entity.getPosition().y, null);
         }
     }
-    private void renderGameUI(MenuState state, Graphics graphics) {
-
-    }
     private void renderTexts(State state, Graphics graphics) {
         for (Text text : state.getTexts()) {
             graphics.setFont(text.getFont());
@@ -46,4 +41,8 @@ public class Renderer {
             graphics.drawString(text.getContent(), text.getPosition().x, text.getPosition().y);
         }
     }
+    private void renderImages(State state, Graphics graphics) {
+
+    }
+
 }

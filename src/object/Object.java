@@ -26,4 +26,7 @@ public abstract class Object implements Edible {
     public Hitbox getHitbox() {
         return hitbox;
     }
+    public int getScoreValue() {
+        return scoreValue;
+    }
 }
