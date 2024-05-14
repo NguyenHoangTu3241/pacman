@@ -8,7 +8,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
     public Direction newDirection = Direction.RIGHT;
-    private CurrentState currentState = CurrentState.WIN_STATE;
+    private CurrentState currentState = CurrentState.MENU_STATE;
     public KeyHandler() {}
     @Override
     public void keyPressed(KeyEvent e) {
