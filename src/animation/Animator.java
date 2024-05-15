@@ -13,7 +13,7 @@ public class Animator {
     private int directionIndex;
     public Animator(BufferedImage _sprite) {
         sprite = _sprite;
-        updatesPerFrame = 10;
+        updatesPerFrame = 5;
         currentFrame = 0;
         frameIndex = 0;
         directionIndex = 0;

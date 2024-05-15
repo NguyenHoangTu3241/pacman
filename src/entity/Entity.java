@@ -42,11 +42,27 @@ public abstract class Entity {
     public boolean isOnGrid(Point pos) {
         return (pos.x - Panel.MAP_X) % Panel.SPRITE_SIZE == 0 || (pos.y - Panel.MAP_Y) % Panel.SPRITE_SIZE == 0;
     }
-
     public abstract Image getSprite();
-
     public Hitbox getHitbox() {
         return hitbox;
+    }
+
+    public void respawn() {
+        switch (direction) {
+            case UP:
+                position = new Point(initialPosition.x, initialPosition.y + speed);
+                break;
+            case DOWN:
+                position = new Point(initialPosition.x, initialPosition.y - speed);
+                break;
+            case LEFT:
+                position = new Point(initialPosition.x + speed, initialPosition.y);
+                break;
+            case RIGHT:
+                position = new Point(initialPosition.x - speed, initialPosition.y);
+                break;
+        }
+        hitbox = new Hitbox(position);
     }
 }
 

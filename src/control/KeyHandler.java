@@ -8,13 +8,16 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
     public Direction newDirection = Direction.RIGHT;
-    private CurrentState currentState = CurrentState.MENU_STATE;
+    private CurrentState currentState = CurrentState.WIN_STATE;
+    private boolean wf = false;
     public KeyHandler() {}
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch (currentState) {
             case MENU_STATE:
+                if (keyCode == KeyEvent.VK_SHIFT)
+                    wf = true;
                 currentState = CurrentState.GAME_STATE;
                 newDirection = Direction.UP;
                 break;
@@ -22,6 +25,7 @@ public class KeyHandler implements KeyListener {
                 GameHandler(keyCode);
                 break;
             case LOSE_STATE, WIN_STATE:
+                wf = false;
                 currentState = CurrentState.MENU_STATE;
                 break;
         }
@@ -51,6 +55,9 @@ public class KeyHandler implements KeyListener {
     }
     public boolean isMenu() {
         return currentState == CurrentState.MENU_STATE;
+    }
+    public boolean waifu() {
+        return wf;
     }
     @Override
     public void keyTyped(KeyEvent e) {}

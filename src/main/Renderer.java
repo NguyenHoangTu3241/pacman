@@ -2,9 +2,11 @@ package main;
 
 import entity.Entity;
 import map.Wall;
+import misc.Gif;
 import misc.Text;
 import object.Object;
-import state.*;
+import state.GameState;
+import state.State;
 
 import java.awt.*;
 public class Renderer {
@@ -15,8 +17,9 @@ public class Renderer {
             renderObjects((GameState) state, graphics);
             renderEntities((GameState) state, graphics);
         }
+        renderGifs(state, graphics);
         renderTexts(state, graphics);
-        renderImages(state, graphics);
+
     }
 
     private void renderMap(GameState state, Graphics graphics) {
@@ -25,7 +28,7 @@ public class Renderer {
         }
     }
     private void renderObjects(GameState state, Graphics graphics) {
-        for (Object gameObject : state.gameObjects) {
+        for (Object gameObject : state.getGameObjects()) {
             graphics.drawImage(gameObject.getSprite(), gameObject.getPosition().x, gameObject.getPosition().y, null);
         }
     }
@@ -41,8 +44,9 @@ public class Renderer {
             graphics.drawString(text.getContent(), text.getPosition().x, text.getPosition().y);
         }
     }
-    private void renderImages(State state, Graphics graphics) {
-
+    private void renderGifs(State state, Graphics graphics) {
+        for (Gif gif : state.getGifs()) {
+            graphics.drawImage(gif.getImage(), gif.getPosition().x, gif.getPosition().y, null);
+        }
     }
-
 }

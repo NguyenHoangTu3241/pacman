@@ -19,7 +19,8 @@ public class Panel extends JPanel {
     public Panel() {
         keyHandler = new KeyHandler();
         mapDecoder = new MapDecoder();
-        state = new MenuState(keyHandler);
+    //    state = new MenuState(keyHandler);
+        state = new WinState(keyHandler, 0);
         gameWindow = new Window(keyHandler, this);
     }
     public void update() {

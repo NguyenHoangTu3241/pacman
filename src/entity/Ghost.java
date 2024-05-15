@@ -18,7 +18,7 @@ public class Ghost extends Entity {
         ghost = loadSprites(name);
         animator = new Animator(ghost);
         target = pacman;
-        System.out.println("Position: " + position.x + ", " + position.y);
+        System.out.println(STR."Created a \{name}. Screen position: \{position.x}, \{position.y}");
     }
 
     public void update(GameState state) {

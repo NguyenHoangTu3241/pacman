@@ -1,10 +1,7 @@
 package main;
-
-
 public class Loop implements Runnable {
 
     private static final int fps = 60;
-
     private final Panel panel;
     private boolean running;
     public Loop(Panel _panel) {
@@ -37,9 +34,7 @@ public class Loop implements Runnable {
     private void update() {
         panel.update();
     }
-
     private void draw() {
         panel.repaint();
     }
-
 }

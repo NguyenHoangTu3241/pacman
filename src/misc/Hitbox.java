@@ -47,13 +47,13 @@ public class Hitbox {
                 newY -= 1;
                 break;
             case DOWN:
-                newY += main.Panel.SPRITE_SIZE;
+                newY += main.Panel.SPRITE_SIZE + 1;
                 break;
             case LEFT:
                 newX -= 1;
                 break;
             case RIGHT:
-                newX += main.Panel.SPRITE_SIZE;
+                newX += main.Panel.SPRITE_SIZE + 1;
                 break;
         }
         return new Point(newX / main.Panel.SPRITE_SIZE, newY / Panel.SPRITE_SIZE);
