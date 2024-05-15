@@ -19,16 +19,15 @@ public class Panel extends JPanel {
     public Panel() {
         keyHandler = new KeyHandler();
         mapDecoder = new MapDecoder();
-    //    state = new MenuState(keyHandler);
-        state = new WinState(keyHandler, 0);
+        state = new MenuState(keyHandler);
         gameWindow = new Window(keyHandler, this);
     }
     public void update() {
         state.update();
-        if (MenuState.class == state.getClass() && ((MenuState) state).gameStart()) {
+        if (state instanceof MenuState && ((MenuState) state).gameStart()) {
             state = new GameState(keyHandler, mapDecoder);
         }
-        else if (GameState.class == state.getClass()) {
+        else if (state instanceof GameState) {
             if (((GameState) state).gameWon()) {
                 int score = ((GameState) state).getScore();
                 keyHandler.setCurrentState(CurrentState.WIN_STATE);
@@ -40,10 +39,10 @@ public class Panel extends JPanel {
                 state = new LoseState(keyHandler, score);
             }
         }
-        else if (WinState.class == state.getClass() && ((WinState) state).gameMenu()) {
+        else if (state instanceof WinState && ((WinState) state).gameMenu()) {
             state = new MenuState(keyHandler);
         }
-        else if (LoseState.class == state.getClass() && ((LoseState) state).gameMenu()) {
+        else if (state instanceof LoseState && ((LoseState) state).gameMenu()) {
             state = new MenuState(keyHandler);
         }
     }
@@ -56,4 +55,5 @@ public class Panel extends JPanel {
         gameWindow.draw(state, g);
         g.dispose();
     }
+
 }

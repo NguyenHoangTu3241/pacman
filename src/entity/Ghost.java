@@ -1,31 +1,62 @@
 package entity;
 
 import animation.Animator;
+import main.Loop;
 import misc.Direction;
+import misc.Edible;
 import misc.Hitbox;
 import state.GameState;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Ghost extends Entity {
-    protected BufferedImage ghost;
+
+public class Ghost extends Entity implements Edible {
+    private final BufferedImage ghost;
+    private final BufferedImage ghostFleeing;
+    private boolean fleeing = false;
     private final PacMan target;
+    private double fleeingTimeLeft = 0;
+    private long lastTime;
     public Ghost(int startX, int startY, String name, PacMan pacman) {
         super(startX, startY);
         speed = 2;
         direction = Direction.DOWN;
         ghost = loadSprites(name);
+        ghostFleeing = loadSprites("ghost_vul_blue");
         animator = new Animator(ghost);
         target = pacman;
         System.out.println(STR."Created a \{name}. Screen position: \{position.x}, \{position.y}");
     }
 
+    public void startFleeing(int seconds) {
+        fleeingTimeLeft = seconds * 1_000_000_000L;
+        lastTime = Loop.now;
+        animator = new Animator(ghostFleeing);
+        fleeing = true;
+    }
+    public boolean isFleeing() {
+        return fleeing;
+    }
     public void update(GameState state) {
+        if (fleeingTimeLeft > 0) {
+            fleeingTimeLeft -= Loop.now - lastTime;
+            lastTime = Loop.now;
+            System.out.println("timeleft: " + fleeingTimeLeft);
+
+            if (fleeingTimeLeft <= 0) {
+                fleeingTimeLeft = 0;
+                animator = new Animator(ghost);
+                fleeing = false;
+            }
+        }
+        else {
+
+        }
+
         Direction newDirection = getNewDirection();
         Point newPosition = move(newDirection);
 
-        // Check if the new position is valid
         boolean update = false;
         if (isOnGrid(newPosition) && !state.hasWall(hitbox.nextGrid(newDirection))) {
             update = true;
@@ -75,5 +106,21 @@ public class Ghost extends Entity {
     public Image getSprite() {
         return animator.getSprite();
     }
+    @Override
+    public void respawn() {
+        fleeing = false;
+        position = initialPosition;
+        hitbox = new Hitbox(position);
+        animator = new Animator(ghost);
+    }
 
+    @Override
+    public void onConsumed() {
+
+    }
+
+    @Override
+    public int getScoreValue() {
+        return 100;
+    }
 }

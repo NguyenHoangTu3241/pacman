@@ -15,18 +15,10 @@ public class Hitbox {
         bounds = new Rectangle(x, y, width, height);
     }
     public Hitbox(int _x, int _y) {
-        x = _x;
-        y = _y;
-        width = Panel.SPRITE_SIZE;
-        height = Panel.SPRITE_SIZE;
-        bounds = new Rectangle(x, y, width, height);
+        this(_x, _y, Panel.SPRITE_SIZE, Panel.SPRITE_SIZE);
     }
     public Hitbox(Point position) {
-        x = position.x;
-        y = position.y;
-        width = Panel.SPRITE_SIZE;
-        height = Panel.SPRITE_SIZE;
-        bounds = new Rectangle(x, y, width, height);
+        this(position.x, position.y);
     }
     public void setPosition(Point newPoint) {
         x = newPoint.x;

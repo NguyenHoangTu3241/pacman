@@ -36,7 +36,6 @@ public abstract class Entity {
     public abstract Direction getNewDirection();
 
     public void update(GameState state) {
-
     }
 
     public boolean isOnGrid(Point pos) {
@@ -47,22 +46,6 @@ public abstract class Entity {
         return hitbox;
     }
 
-    public void respawn() {
-        switch (direction) {
-            case UP:
-                position = new Point(initialPosition.x, initialPosition.y + speed);
-                break;
-            case DOWN:
-                position = new Point(initialPosition.x, initialPosition.y - speed);
-                break;
-            case LEFT:
-                position = new Point(initialPosition.x + speed, initialPosition.y);
-                break;
-            case RIGHT:
-                position = new Point(initialPosition.x - speed, initialPosition.y);
-                break;
-        }
-        hitbox = new Hitbox(position);
-    }
+    public abstract void respawn();
 }
 

@@ -3,22 +3,21 @@ public class Loop implements Runnable {
 
     private static final int fps = 60;
     private final Panel panel;
-    private boolean running;
+    public static long now;
     public Loop(Panel _panel) {
         panel = _panel;
     }
-
     @Override
     public void run() {
-        running = true;
 
-        double drawInterval = (double) 1000000000 / fps;
+        double drawInterval = (double) 1_000_000_000 / fps;
         double deltaTime = 0;
         long lastTime = System.nanoTime();
         long currentTime;
 
-        while (running) {
-            currentTime = System.nanoTime();
+        while (true) {
+            now = System.nanoTime();
+            currentTime = now;
             deltaTime += (currentTime - lastTime) / drawInterval;
             lastTime = currentTime;
 
@@ -27,7 +26,6 @@ public class Loop implements Runnable {
 
             update();
             draw();
-
         }
     }
 

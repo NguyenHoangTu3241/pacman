@@ -78,4 +78,22 @@ public class PacMan extends Entity {
         if (life < 0) return;
         life--;
     }
+    @Override
+    public void respawn() {
+        switch (direction) {
+            case UP:
+                position = new Point(initialPosition.x, initialPosition.y + speed);
+                break;
+            case DOWN:
+                position = new Point(initialPosition.x, initialPosition.y - speed);
+                break;
+            case LEFT:
+                position = new Point(initialPosition.x + speed, initialPosition.y);
+                break;
+            case RIGHT:
+                position = new Point(initialPosition.x - speed, initialPosition.y);
+                break;
+        }
+        hitbox = new Hitbox(position);
+    }
 }

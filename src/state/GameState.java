@@ -10,12 +10,12 @@ import map.Wall;
 import misc.Gif;
 import misc.Text;
 import object.Object;
+import object.PowerPellet;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class GameState extends State {
     private List<Entity> entities;
@@ -61,7 +61,7 @@ public class GameState extends State {
         texts.add(scoreText);
 
         life = new Gif(3, "/sprites/ui/life.png", new Point(745, 80));
-        death = new Gif(11, "/sprites/entities/dead.png", new Point(0, 0));
+        death = new Gif(11, "/sprites/entities/dead.png", new Point(0, 0), 9);
         gifs.add(life);
 
         newGameSound = new Sound("newGame");
@@ -73,62 +73,92 @@ public class GameState extends State {
         if (gameObjects.isEmpty()) {
             win = true;
             nomnomSound.stop();
+            return;
         }
+        switch (action) {
+            case "start":
+                if (!newGameSound.isRunning()) {
+                    action = "update";
+                }
+                break;
 
-        if (Objects.equals(action, "start")) {
-            if (!newGameSound.isRunning()) {
+            case "die":
+                if (deathSound.isRunning()) {
+                    death.update();
+                    break;
+                }
+                if (pacman.getLife() > 0) {
+                    action = "respawn";
+                } else {
+                    lose = true;
+                }
+                break;
+
+            case "respawn":
+                life.update();
+                gifs.removeFirst();
+                entities.addFirst(pacman);
+                for (Entity entity1 : entities) {
+                    entity1.respawn();
+                }
                 action = "update";
-            }
-            return;
-        }
+                break;
 
-        if (Objects.equals(action, "die")) {
-            if (deathSound.isRunning()) {
-                return;
-            }
-            if (pacman.getLife() > 0) action = "respawn";
-            else {
-                lose = true;
-                return;
-            }
-        }
-
-        if (Objects.equals(action, "respawn")) {
-            life.update();
-            for (Entity entity1 : entities) entity1.respawn();
-            action = "update";
-            return;
-        }
-
-        if (Objects.equals(action, "update")) {
-            if (pacman.update) nomnomSound.loop();
-            else nomnomSound.stop();
-
-            for (Entity entity : entities) {
-                entity.update(this);
-                if (entity != pacman && entity.getHitbox().collidesWith(pacman.getHitbox())) {
-                    pacman.die();
+            case "update":
+                if (pacman.update) {
+                    nomnomSound.loop();
+                } else {
                     nomnomSound.stop();
-                    deathSound.play();
-                    action = "die";
-                    break;
                 }
-            }
 
-            for (Object object : gameObjects) {
-                if (object.getHitbox().collidesWith(pacman.getHitbox())) {
-                    gameObjectsToRemove.add(object);
-                    score += object.getScoreValue();
-                    scoreText.setContent(STR."Current score: \{score}");
-                    break;
+                for (Entity entity : entities) {
+                    entity.update(this);
+                    if (entity != pacman && entity.getHitbox().collidesWith(pacman.getHitbox()))
+                        if (((Ghost) entity).isFleeing()) {
+                            gainScore(((Ghost) entity).getScoreValue());
+                            entity.respawn();
+                        }
+                        else {
+                            pacman.die();
+                            nomnomSound.stop();
+                            deathSound.play();
+                            action = "die";
+                            entities.removeFirst();
+                            gifs.addFirst(death);
+                            death.setFrame(0);
+                            death.setPosition(pacman.getPosition());
+                            break;
+                        }
                 }
-            }
+
+                for (Object object : gameObjects) {
+                    if (object.getHitbox().collidesWith(pacman.getHitbox())) {
+                        gameObjectsToRemove.add(object);
+                        gainScore(object.getScoreValue());
+                        if (object instanceof PowerPellet) {
+                            startFleeingGhosts();
+                        }
+                        break;
+                    }
+                }
+                break;
+            default:
+                action = "break";
+                break;
         }
-
 
     }
-
-
+    private void gainScore(int _score) {
+        score += _score;
+        scoreText.setContent(STR."Current score: \{score}");
+    }
+    private void startFleeingGhosts() {
+        for (Entity entity : entities) {
+            if (entity instanceof Ghost) {
+                ((Ghost) entity).startFleeing(5);
+            }
+        }
+    }
     public List<Object> getGameObjects() {
         gameObjects.removeAll(gameObjectsToRemove);
         return gameObjects;
