@@ -9,9 +9,9 @@ public class ImageLoader {
     public static Image loadImage(String path) {
         try {
             return ImageIO.read(Objects.requireNonNull(ImageLoader.class.getResourceAsStream(path)));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println(STR."Error loading sprite: \{path}");
+            System.out.println(e.getMessage());
         }
         return null;
     }

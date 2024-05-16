@@ -4,7 +4,7 @@ import animation.Animator;
 import animation.ImageLoader;
 import main.Panel;
 import misc.Direction;
-import state.GameState;
+import state.Game;
 import misc.Hitbox;
 
 import java.awt.*;
@@ -26,22 +26,21 @@ public abstract class Entity {
     }
 
     public BufferedImage loadSprites(String imagePath) {
-        return (BufferedImage) ImageLoader.loadImage(STR."/sprites/entities/\{imagePath}.png" );
+        return (BufferedImage) ImageLoader.loadImage(STR."/sprites/entities/\{imagePath}.png");
     }
 
     public Point getPosition() {
         return position;
     }
 
-    public abstract Direction getNewDirection();
-
-    public void update(GameState state) {
-    }
+    public abstract void update(Game state);
 
     public boolean isOnGrid(Point pos) {
         return (pos.x - Panel.MAP_X) % Panel.SPRITE_SIZE == 0 || (pos.y - Panel.MAP_Y) % Panel.SPRITE_SIZE == 0;
     }
+
     public abstract Image getSprite();
+
     public Hitbox getHitbox() {
         return hitbox;
     }

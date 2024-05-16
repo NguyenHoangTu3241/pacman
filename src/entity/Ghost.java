@@ -6,13 +6,12 @@ import main.Panel;
 import misc.Direction;
 import misc.Edible;
 import misc.Hitbox;
-import state.GameState;
+import state.Game;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
-
 
 public class Ghost extends Entity implements Edible {
     private final BufferedImage ghost;
@@ -22,16 +21,16 @@ public class Ghost extends Entity implements Edible {
     private double fleeingTimeLeft = 0;
     private long lastTime;
     private List<Point> path;
-    public Ghost(int startX, int startY, String name, PacMan _pacman) {
+
+    public Ghost(int startX, int startY, String name, int baseSpeed, PacMan _pacman) {
         super(startX, startY);
-        speed = 2;
+        speed = baseSpeed;
         direction = Direction.DOWN;
         ghost = loadSprites(name);
         ghostFleeing = loadSprites("ghost_vul_blue");
         animator = new Animator(ghost);
         pacman = _pacman;
         path = new ArrayList<>();
-        System.out.println(STR."Created a \{name}. Screen position: \{position.x}, \{position.y}");
     }
 
     public void startFleeing(int seconds) {
@@ -40,10 +39,12 @@ public class Ghost extends Entity implements Edible {
         animator = new Animator(ghostFleeing);
         fleeing = true;
     }
+
     public boolean isFleeing() {
         return fleeing;
     }
-    public void update(GameState state) {
+
+    public void update(Game state) {
         if (fleeingTimeLeft > 0) {
             fleeingTimeLeft -= Loop.now - lastTime;
             lastTime = Loop.now;
@@ -54,28 +55,7 @@ public class Ghost extends Entity implements Edible {
                 fleeing = false;
             }
         }
-        else {
 
-        }
-
-        /*
-        Direction newDirection = getNewDirection();
-        Point newPosition = move(newDirection);
-
-        boolean update = false;
-        if (isOnGrid(newPosition) && !state.hasWall(hitbox.nextGrid(newDirection))) {
-            update = true;
-        } else {
-            newPosition = move(direction);
-            update = !state.hasWall(hitbox.nextGrid(direction));
-        }
-
-        if (update) {
-            position = newPosition;
-            hitbox = new Hitbox(newPosition);
-            animator.updateSprite(direction);
-        }
-        */
         boolean update = false;
         if (path.isEmpty()) {
             path = pathFind(state, hitbox.currentGrid(), pacman.hitbox.currentGrid());
@@ -87,9 +67,7 @@ public class Ghost extends Entity implements Edible {
             else if (target.x < position.x) direction = Direction.LEFT;
             else if (target.y > position.y) direction = Direction.DOWN;
             else if (target.y < position.y) direction = Direction.UP;
-        }
-        else {
-            System.out.println(path.getFirst().x + "  ,  " + path.getFirst().y);
+        } else {
             path.removeFirst();
         }
 
@@ -99,7 +77,8 @@ public class Ghost extends Entity implements Edible {
             animator.updateSprite(direction);
         }
     }
-    private List<Point> FindNeighbors(GameState state, Point point) {
+
+    private List<Point> FindNeighbors(Game state, Point point) {
         if (point.x < 1 || point.x >= Panel.MAP_COL || point.y < 1 || point.y >= Panel.MAP_ROW) return null;
         List<Point> neighbors = new ArrayList<>();
         Point up = new Point(point.x, point.y + 1);
@@ -113,7 +92,7 @@ public class Ghost extends Entity implements Edible {
         return neighbors;
     }
 
-    private List<Point> pathFind(GameState state, Point start, Point end) {
+    private List<Point> pathFind(Game state, Point start, Point end) {
         Map<Point, Point> previous = new HashMap<>();
 
         boolean finished = false;
@@ -121,9 +100,9 @@ public class Ghost extends Entity implements Edible {
         used.add(start);
         while (!finished) {
             List<Point> newOpen = new ArrayList<>();
-            for(int i = 0; i < used.size(); ++i){
+            for (int i = 0; i < used.size(); ++i) {
                 Point point = used.get(i);
-                for (Point neighbor : FindNeighbors(state, point)) {
+                for (Point neighbor : Objects.requireNonNull(FindNeighbors(state, point))) {
                     if (!used.contains(neighbor) && !newOpen.contains(neighbor)) {
                         newOpen.add(neighbor);
                         previous.put(neighbor, point);
@@ -131,25 +110,23 @@ public class Ghost extends Entity implements Edible {
                 }
             }
 
-            for(Point point : newOpen) {
+            for (Point point : newOpen) {
                 used.add(point);
                 if (end.equals(point)) {
-                    System.out.println("found");
                     finished = true;
                     break;
                 }
             }
 
             if (!finished && newOpen.isEmpty()) {
-                System.out.println("Unable find pacman");
-                return null;
+                return new ArrayList<>();
             }
 
         }
 
         List<Point> path = new ArrayList<>();
-        Point point = used.get(used.size() - 1);
-        while(previous.get(point) != null) {
+        Point point = used.getLast();
+        while (previous.get(point) != null) {
             path.addFirst(point);
             point = previous.get(point);
         }
@@ -177,21 +154,10 @@ public class Ghost extends Entity implements Edible {
     }
 
     @Override
-    public Direction getNewDirection() {
-        int dx = pacman.getPosition().x - position.x;
-        int dy = pacman.getPosition().y - position.y;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-            return (dx < 0) ? Direction.LEFT : Direction.RIGHT;
-        } else {
-            return (dy < 0) ? Direction.UP : Direction.DOWN;
-        }
-    }
-
-    @Override
     public Image getSprite() {
         return animator.getSprite();
     }
+
     @Override
     public void respawn() {
         path.clear();
@@ -201,10 +167,7 @@ public class Ghost extends Entity implements Edible {
         hitbox = new Hitbox(position);
         animator = new Animator(ghost);
     }
-    @Override
-    public void onConsumed() {
 
-    }
     @Override
     public int getScoreValue() {
         return 100;

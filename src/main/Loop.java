@@ -1,12 +1,15 @@
 package main;
+
 public class Loop implements Runnable {
 
     private static final int fps = 60;
     private final Panel panel;
     public static long now;
+
     public Loop(Panel _panel) {
         panel = _panel;
     }
+
     @Override
     public void run() {
 
@@ -32,6 +35,7 @@ public class Loop implements Runnable {
     private void update() {
         panel.update();
     }
+
     private void draw() {
         panel.repaint();
     }

@@ -21,6 +21,7 @@ public class MapDecoder {
     private final List<Wall> walls;
     private final boolean[][] hasWall;
     private final ArrayList<String> wallNames = new ArrayList<>(Arrays.asList("╔", "╗", "╚", "╝", "═", "║", "╩", "╦", "╠", "╣", "╘", "╕", "╓", "╜"));
+
     public MapDecoder() {
         entityPositions = new ArrayList<>();
         gameObjects = new ArrayList<>();
@@ -29,14 +30,8 @@ public class MapDecoder {
         loadMap();
         readMap();
         System.out.println("Completed initializing map");
-        int space = 0;
-        for (int row = 0; row < main.Panel.MAP_ROW; row++) {
-            for (int col = 0; col < main.Panel.MAP_COL; col++) {
-                if (!hasWall[col][row]) space++;
-            }
-        }
-        System.out.println("Space: " + space);
     }
+
     private void loadMap() {
         try {
             InputStream is = getClass().getResourceAsStream("/encodedmap.txt");
@@ -49,8 +44,7 @@ public class MapDecoder {
                 }
             }
             br.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error loading encodedmap.txt for Decoder");
         }
     }
@@ -62,45 +56,38 @@ public class MapDecoder {
                 if (wallNames.contains(STR."\{name}")) {
                     walls.add(new Wall(STR."\{name}", col, row));
                     hasWall[col][row] = true;
-                }
-                else hasWall[col][row] = false;
+                } else hasWall[col][row] = false;
                 if (name == '.') {
                     gameObjects.add(new Pellet(col, row));
-                }
-                else if (name == 'o') {
+                } else if (name == 'o') {
                     gameObjects.add(new PowerPellet(col, row));
-                }
-                else if (name == 'a') {
+                } else if (name == 'a') {
                     entityPositions.add(new Point(Panel.MAP_X + col * Panel.SPRITE_SIZE, Panel.MAP_Y + row * Panel.SPRITE_SIZE));
-                }
-                else if (name == 'b') {
+                } else if (name == 'b') {
                     entityPositions.add(new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE));
-                }
-                else if (name == 'c') {
+                } else if (name == 'c') {
                     entityPositions.add(new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE));
-                }
-                else if (name == 'd') {
+                } else if (name == 'd') {
                     entityPositions.add(new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE));
-                }
-                else if (name == 'p') {
+                } else if (name == 'p') {
                     entityPositions.addFirst(new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE));
                 }
             }
         }
     }
 
-    public char[][] getMapTile() {
-        return mapTile;
-    }
     public List<Point> getEntityPositions() {
         return entityPositions;
     }
+
     public List<Object> getGameObjects() {
         return new ArrayList<>(gameObjects);
     }
+
     public List<Wall> getWalls() {
         return walls;
     }
+
     public boolean[][] getHasWall() {
         return hasWall;
     }

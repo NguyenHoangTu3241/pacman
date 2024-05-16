@@ -11,6 +11,7 @@ public class Animator {
     private int currentFrame;
     private int frameIndex;
     private int directionIndex;
+
     public Animator(BufferedImage _sprite) {
         sprite = _sprite;
         updatesPerFrame = 5;
@@ -22,10 +23,10 @@ public class Animator {
     public void updateSprite(Direction direction) {
         currentFrame++;
         directionIndex = direction.getSpriteRow();
-        if(currentFrame >= updatesPerFrame) {
+        if (currentFrame >= updatesPerFrame) {
             currentFrame = 0;
             frameIndex++;
-            if(frameIndex > sprite.getWidth()/ main.Panel.SPRITE_SIZE - 1) {
+            if (frameIndex > sprite.getWidth() / main.Panel.SPRITE_SIZE - 1) {
                 frameIndex = 0;
             }
         }

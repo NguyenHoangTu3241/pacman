@@ -10,8 +10,4 @@ public class Pellet extends Object implements Edible {
         hitbox = new Hitbox(position.x + 6, position.y + 6, 4, 4);
     }
 
-    @Override
-    public void onConsumed() {
-
-    }
 }

@@ -8,32 +8,33 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
     public Direction newDirection = Direction.RIGHT;
-    private CurrentState currentState = CurrentState.MENU_STATE;
+    private CurrentState currentState = CurrentState.MENU;
     private boolean wf = false;
-    public KeyHandler() {}
+
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch (currentState) {
-            case MENU_STATE:
-                if (keyCode == KeyEvent.VK_SHIFT)
-                    wf = true;
-                currentState = CurrentState.GAME_STATE;
+            case MENU:
+                if (keyCode == KeyEvent.VK_SHIFT) wf = true;
+                currentState = CurrentState.GAME;
                 newDirection = Direction.UP;
                 break;
-            case GAME_STATE:
+            case GAME:
                 GameHandler(keyCode);
                 break;
-            case LOSE_STATE, WIN_STATE:
+            case GAME_OVER:
                 wf = false;
-                currentState = CurrentState.MENU_STATE;
+                currentState = CurrentState.MENU;
                 break;
         }
 
     }
+
     public void setCurrentState(CurrentState _currentState) {
         currentState = _currentState;
     }
+
     public void GameHandler(int keyCode) {
         switch (keyCode) {
             case KeyEvent.VK_UP:
@@ -50,17 +51,22 @@ public class KeyHandler implements KeyListener {
                 break;
         }
     }
+
     public boolean isGame() {
-        return currentState == CurrentState.GAME_STATE;
+        return currentState == CurrentState.GAME;
     }
+
     public boolean isMenu() {
-        return currentState == CurrentState.MENU_STATE;
+        return currentState == CurrentState.MENU;
     }
+
     public boolean waifu() {
         return wf;
     }
+
     @Override
     public void keyTyped(KeyEvent e) {}
+
     @Override
     public void keyReleased(KeyEvent e) {}
 }

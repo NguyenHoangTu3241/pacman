@@ -12,16 +12,21 @@ public abstract class State {
     protected KeyHandler keyHandler;
     protected List<Text> texts;
     protected List<Gif> gifs;
+
     public State(KeyHandler _keyHandler) {
         keyHandler = _keyHandler;
         texts = new ArrayList<>();
         gifs = new ArrayList<>();
     }
+
     public abstract void init();
+
     public abstract void update();
+
     public List<Text> getTexts() {
         return texts;
     }
+
     public List<Gif> getGifs() {
         return gifs;
     }

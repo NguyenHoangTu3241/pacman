@@ -4,7 +4,7 @@ import animation.Animator;
 import control.KeyHandler;
 import misc.Direction;
 import misc.Hitbox;
-import state.GameState;
+import state.Game;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,20 +13,18 @@ public class PacMan extends Entity {
     private final KeyHandler keyHandler;
     protected BufferedImage pacman;
     public boolean update;
-    private final int maxLife = 3;
     private int life;
 
     public PacMan(int startX, int startY, KeyHandler _keyHandler) {
         super(startX, startY);
         keyHandler = _keyHandler;
-        life = maxLife;
+        life = 3;
         if (keyHandler.waifu()) pacman = loadSprites("pacmanwaifu");
         else pacman = loadSprites("pacman");
         animator = new Animator(pacman);
-        System.out.println(STR."Created pacman. Screen position: \{position.x}, \{position.y}");
     }
 
-    public void update(GameState state) {
+    public void update(Game state) {
         Direction newDirection = getNewDirection();
         Point newPosition = move(newDirection);
         if (isOnGrid(newPosition) && !state.hasWall(hitbox.nextGrid(newDirection))) {
