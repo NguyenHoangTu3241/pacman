@@ -14,9 +14,8 @@ import java.util.*;
 import java.util.List;
 
 public class Ghost extends Entity implements Edible {
-    private final BufferedImage ghost;
-    private final BufferedImage ghostFleeing;
-    private boolean fleeing = false;
+    private final BufferedImage ghost, ghostFleeing, ghostFleeingLate, ghostEye;
+    private boolean fleeing = false, returning = false;
     private final PacMan pacman;
     private double fleeingTimeLeft = 0;
     private long lastTime;
@@ -28,6 +27,9 @@ public class Ghost extends Entity implements Edible {
         direction = Direction.DOWN;
         ghost = loadSprites(name);
         ghostFleeing = loadSprites("ghost_vul_blue");
+        ghostFleeingLate = loadSprites("ghost_vul_white");
+        ghostEye = loadSprites("ghost_eyes");
+
         animator = new Animator(ghost);
         pacman = _pacman;
         path = new ArrayList<>();
@@ -44,8 +46,15 @@ public class Ghost extends Entity implements Edible {
         return fleeing;
     }
 
+    public boolean isReturning() {
+        return returning;
+    }
+
     public void update(Game state) {
         if (fleeingTimeLeft > 0) {
+            if (fleeingTimeLeft < 1_000_000_000L) {
+                animator = new Animator(ghostFleeingLate);
+            }
             fleeingTimeLeft -= Loop.now - lastTime;
             lastTime = Loop.now;
 
@@ -57,6 +66,14 @@ public class Ghost extends Entity implements Edible {
         }
 
         boolean update = false;
+
+        if (returning) {
+            if (path.isEmpty()) {
+                returning = false;
+                animator = new Animator(ghost);
+            }
+        }
+
         if (path.isEmpty()) {
             path = pathFind(state, hitbox.currentGrid(), pacman.hitbox.currentGrid());
         }
@@ -162,10 +179,20 @@ public class Ghost extends Entity implements Edible {
     public void respawn() {
         path.clear();
         fleeing = false;
+        returning = false;
         fleeingTimeLeft = 0;
-        position = initialPosition;
-        hitbox = new Hitbox(position);
         animator = new Animator(ghost);
+        position = initialPosition;
+        hitbox = new Hitbox(initialPosition);
+    }
+
+    public void returnBase(Game state) {
+        path.clear();
+        fleeing = false;
+        fleeingTimeLeft = 0;
+        animator = new Animator(ghostEye);
+        path = pathFind(state, hitbox.currentGrid(), new Point((initialPosition.x - Panel.MAP_X) / Panel.SPRITE_SIZE, (initialPosition.y - Panel.MAP_Y) / Panel.SPRITE_SIZE));
+        returning = true;
     }
 
     @Override

@@ -53,7 +53,7 @@ public class Game extends State {
         for (int i = 1; i < stage; i++) baseSpeed *= 2;
         init();
         reset(mapDecoder);
-        for (int i = 1; i < _life; i++) {
+        for (int i = 3; i > _life; i--) {
             pacman.die();
             life.update();
         }
@@ -117,8 +117,8 @@ public class Game extends State {
                 life.update();
                 gifs.removeFirst();
                 entities.addFirst(pacman);
-                for (Entity entity1 : entities) {
-                    entity1.respawn();
+                for (Entity entity : entities) {
+                    entity.respawn();
                 }
                 action = "update";
                 break;
@@ -135,8 +135,8 @@ public class Game extends State {
                     if (entity != pacman && entity.getHitbox().collidesWith(pacman.getHitbox()))
                         if (((Ghost) entity).isFleeing()) {
                             gainScore(((Ghost) entity).getScoreValue());
-                            entity.respawn();
-                        } else {
+                            ((Ghost) entity).returnBase(this);
+                        } else if (!((Ghost) entity).isReturning()) {
                             pacman.die();
                             nomnomSound.stop();
                             deathSound.play();
@@ -174,7 +174,7 @@ public class Game extends State {
 
     private void startFleeingGhosts() {
         for (Entity entity : entities) {
-            if (entity instanceof Ghost) {
+            if (entity instanceof Ghost && !((Ghost) entity).isReturning()) {
                 ((Ghost) entity).startFleeing(5);
             }
         }

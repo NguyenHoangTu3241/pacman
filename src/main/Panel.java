@@ -22,7 +22,6 @@ public class Panel extends JPanel {
         keyHandler = new KeyHandler();
         mapDecoder = new MapDecoder();
         state = new Menu(keyHandler);
-        state = new GameOver(keyHandler, 99, 2);
         gameWindow = new Window(keyHandler, this);
     }
 
