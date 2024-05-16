@@ -29,6 +29,13 @@ public class MapDecoder {
         loadMap();
         readMap();
         System.out.println("Completed initializing map");
+        int space = 0;
+        for (int row = 0; row < main.Panel.MAP_ROW; row++) {
+            for (int col = 0; col < main.Panel.MAP_COL; col++) {
+                if (!hasWall[col][row]) space++;
+            }
+        }
+        System.out.println("Space: " + space);
     }
     private void loadMap() {
         try {
@@ -64,7 +71,7 @@ public class MapDecoder {
                     gameObjects.add(new PowerPellet(col, row));
                 }
                 else if (name == 'a') {
-                    entityPositions.add(new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE));
+                    entityPositions.add(new Point(Panel.MAP_X + col * Panel.SPRITE_SIZE, Panel.MAP_Y + row * Panel.SPRITE_SIZE));
                 }
                 else if (name == 'b') {
                     entityPositions.add(new Point(main.Panel.MAP_X + col * main.Panel.SPRITE_SIZE, main.Panel.MAP_Y + row * main.Panel.SPRITE_SIZE));

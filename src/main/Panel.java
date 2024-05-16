@@ -11,7 +11,7 @@ import java.awt.*;
 public class Panel extends JPanel {
     public static int SPRITE_SIZE = 16;
     public static int MAP_COL = 40, MAP_ROW = 30;
-    public static int MAP_X = 80, MAP_Y = 60;
+    public static int MAP_X = 30, MAP_Y = 50;
     private final Window gameWindow;
     public final KeyHandler keyHandler;
     private static State state;

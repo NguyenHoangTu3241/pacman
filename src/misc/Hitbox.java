@@ -50,6 +50,9 @@ public class Hitbox {
         }
         return new Point(newX / main.Panel.SPRITE_SIZE, newY / Panel.SPRITE_SIZE);
     }
+    public Point currentGrid() {
+        return new Point((x - Panel.MAP_X) / Panel.SPRITE_SIZE, (y - Panel.MAP_Y) / Panel.SPRITE_SIZE);
+    }
     public Rectangle getHitbox() {
         return bounds;
     }

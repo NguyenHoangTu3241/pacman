@@ -57,12 +57,13 @@ public class GameState extends State {
         newGameSound.play();
     }
     public void init() {
-        scoreText = new Text(STR."Current score: \{score}", 20, new Point(50, 50));
+        scoreText = new Text(STR."Current score: \{score}", 20, new Point(31, 30));
         texts.add(scoreText);
 
-        life = new Gif(3, "/sprites/ui/life.png", new Point(745, 80));
+        life = new Gif(3, "/sprites/ui/life.png", new Point(710, 50));
         death = new Gif(11, "/sprites/entities/dead.png", new Point(0, 0), 9);
         gifs.add(life);
+
 
         newGameSound = new Sound("newGame");
         deathSound = new Sound("death");
