@@ -6,18 +6,20 @@ import misc.Text;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 
 public class GameOver extends State {
-    private int score, stage, bonusscore, bestScore;
+    private final int score;
+    private final int bonusScore;
+    private int bestScore;
 
     public GameOver(KeyHandler _keyHandler, int _score, int _stage) {
         super(_keyHandler);
         score = _score;
-        stage = _stage;
-        bonusscore = (stage - 1) * 1000;
+        bonusScore = (_stage - 1) * 1000;
         bestScore = readBestScore();
-        if (score + bonusscore > bestScore) {
-            bestScore = score + bonusscore;
+        if (score + bonusScore > bestScore) {
+            bestScore = score + bonusScore;
             writeBestScore();
         }
         init();
@@ -27,8 +29,8 @@ public class GameOver extends State {
     public void init() {
         texts.add(new Text("< press any key to return to menu >", 25, new Point(120, 520)));
         texts.add(new Text(STR."Gained score: \{score}", 20, new Point(100, 350)));
-        texts.add(new Text(STR."Stage bonus: \{bonusscore}", 20, new Point(450, 350)));
-        texts.add(new Text(STR."Total score: \{score + bonusscore}", 20, new Point(100, 450)));
+        texts.add(new Text(STR."Stage bonus: \{bonusScore}", 20, new Point(450, 350)));
+        texts.add(new Text(STR."Total score: \{score + bonusScore}", 20, new Point(100, 450)));
         texts.add(new Text(STR."Best score: \{bestScore}", 20, new Point(450, 450)));
 
         gifs.add(new Gif(1, "/sprites/ui/game_over.png", new Point(-40, 50)));
@@ -43,22 +45,29 @@ public class GameOver extends State {
     }
 
     private int readBestScore() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("pacman/res/bestscore.txt"))) {
+        try {
+            InputStream is = getClass().getResourceAsStream("/score/bestscore.txt");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line = reader.readLine();
             if (line != null) {
                 return Integer.parseInt(line);
             }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return 0;
     }
 
     private void writeBestScore() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("pacman/res/bestscore.txt"))) {
-            writer.write(String.valueOf(bestScore));
-        } catch (IOException e) {
-            e.printStackTrace();
+        URL url = getClass().getResource("/score/bestscore.txt");
+        if (url != null) {
+            File file = new File(url.getPath());
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(String.valueOf(bestScore));
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
+
 }

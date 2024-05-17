@@ -20,7 +20,7 @@ public class Text {
     private Font loadFont(int _size) {
         Font customFont = null;
         try {
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("pacman/res/font/pixelfont.ttf")).deriveFont(Font.PLAIN, _size);
+            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("res/font/pixelfont.ttf")).deriveFont(Font.PLAIN, _size);
         } catch (IOException | FontFormatException e) {
             System.out.println("Error loading font");
             System.out.println(e.getMessage());
