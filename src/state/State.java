@@ -1,6 +1,5 @@
 package state;
 
-import audio.Sound;
 import control.KeyHandler;
 import misc.Gif;
 import misc.Text;

@@ -1,6 +1,6 @@
 package state;
 
-import audio.Sound;
+import sound.Sound;
 import control.KeyHandler;
 import entity.Entity;
 import entity.Ghost;

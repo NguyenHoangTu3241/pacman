@@ -1,10 +1,10 @@
-student Nguyen Hoang Tu's repo for final assignments of Object-oriented programming class (2324II_INT2204_3) of AITC-K68-UET, instructed by Mrs.ChauTTM and Mr.Ming (fake).
+My repository containing final assignment for Object-oriented programming class (2324II_INT2204_3) of AITC-K68-UET.
 
 content: Pacman game
 
 features:
-  -  objective: control Pacman to eat all the pellets on the game map while avoiding being caught by ghosts (not of tsushima)
+  -  objective: control Pacman to eat all the pellets on the game map and avoid to be caught by ghosts
   -  controls: arrow keys to move
-  -  the game doesn't continue new rounds automatically for each run, but shows the final score and requires user to replay instead
+  -  mechanic: automatically moves to a harder stage each run, until player is out of lives
 
-will be developed for more utilities even after the OOP course.  
+enjoy my creation
