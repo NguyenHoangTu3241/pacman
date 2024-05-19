@@ -6,6 +6,8 @@ import state.State;
 import javax.swing.*;
 import java.awt.*;
 
+import static animation.ImageLoader.loadImage;
+
 public class Window extends JFrame {
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
@@ -15,6 +17,7 @@ public class Window extends JFrame {
         setTitle("Pacman Game by Nguyen Hoang Tu");
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setIconImage(loadImage("/sprites/ui/icon.png"));
 
         add(_game);
         renderer = new Renderer();
